@@ -1,0 +1,2 @@
+Separate out CLIP into it's own module, with the model hosted on arweave
+Separate out the diffusion model code
