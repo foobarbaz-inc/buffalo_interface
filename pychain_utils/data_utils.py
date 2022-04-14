@@ -13,3 +13,6 @@ def torch_img_to_arweave(img_tensor):
     img.save(output_bytes, format='JPEG', quality=95)
     output_location = upload_data(output_bytes.getvalue())
     return output_location
+
+def convert_to_NFT(arweave_path):
+    raise NotImplementedError

@@ -18,7 +18,7 @@ def run_inference(job_id,
                   output_data_location_type,
                   output_data_format):
     # convert seed from bytes to int
-    seed = int.from_bytes(hashlib.sha256(seed).digest()[:10], 'big')
+    seed = int.from_bytes(hashlib.sha256(seed).digest()[:3], 'big')
     
     # load the model
     model = build_model_from_config(model_class_num, model_config_location)
