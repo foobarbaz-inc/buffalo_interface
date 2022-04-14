@@ -1,2 +1,4 @@
-Separate out CLIP into it's own module, with the model hosted on arweave
-Separate out the diffusion model code
+-Separate out CLIP into it's own module, with the model hosted on arweave
+-Separate out the diffusion model code
+-Have a better way of linking the contract enums with the constants used in the
+worker and sequencer

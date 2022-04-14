@@ -2,7 +2,7 @@ import subprocess
 import base58
 import binascii
 import os
-import urllib
+import requests
 
 from pychain_utils.wallets import create_solana_wallet
 
@@ -53,12 +53,13 @@ def download(arweave_path, root=None):
         return output_path
 
     print(f'Downloading file from {arweave_path}')
-    response = urllib.request.urlopen(arweave_path)
-    data = response.read()
 
-    with open(output_path, 'wb') as f:
-        f.write(data)
-    
+    with requests.get(arweave_path, stream=True) as r:
+        r.raise_for_status()
+        with open(output_path, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024*1024*50): # 50 MB chunks
+                f.write(chunk)
+
     return output_path
 
 lamports_per_sol = 1000000000

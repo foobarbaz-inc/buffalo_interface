@@ -1,3 +1,4 @@
 base58
 web3
 solana
+git+https://github.com/openai/CLIP.git
