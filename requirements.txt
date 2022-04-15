@@ -1,5 +1,6 @@
 base58
 web3
 solana
-celery
+celery[redis]
+redis
 git+https://github.com/openai/CLIP.git

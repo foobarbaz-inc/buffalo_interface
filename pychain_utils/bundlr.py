@@ -5,12 +5,13 @@ import os
 import requests
 
 from pychain_utils.wallets import create_solana_wallet
+from . import root
 
 host = 'http://node1.bundlr.network'
 
 fund_amount_MB = 500
-def upload(local_filename, root=None):
-    private_key, public_key = create_solana_wallet(root=root)
+def upload(local_filename):
+    private_key, public_key = create_solana_wallet()
 
     # check file size in MB
     file_size = os.path.getsize(local_filename)/1024/1024
@@ -19,34 +20,32 @@ def upload(local_filename, root=None):
         raise ValueError(f'file exceeds limit of {fund_amount_MB} MB')
 
     # check balance in MB
-    balance_in_sol = check_balance(root=root)
+    balance_in_sol = check_balance()
     balance_in_MB = sol_to_MB(balance_in_sol)
     if balance_in_MB < file_size*1.2:
         print(f'Low funds in bundlr wallet, funding from solana wallet...')
-        fund(fund_amount_MB, root=root)
+        fund(fund_amount_MB)
 
     cmd = f'bundlr upload {local_filename} -h {host} -w {private_key} -c solana'
     result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
     web_address = result.stdout.decode('utf-8').strip().split(' ')[-1]
     return web_address
 
-def upload_data(data, root=None):
+def upload_data(data):
     output_id = base58.b58encode(os.urandom(20)).decode('utf-8')
     output_path = f'outputs/{output_id}'
-    if root is not None:
-        output_path = os.path.join(root, output_path)
+    output_path = os.path.join(root, output_path)
 
     with open(output_path, 'wb') as f:
         f.write(data)
 
-    return upload(output_path, root=root)
+    return upload(output_path)
 
-def download(arweave_path, root=None):
+def download(arweave_path):
     arweave_id = arweave_path.split('/')[-1]
     output_path = f'downloads/{arweave_id}'
 
-    if root is not None:
-        output_path = os.path.join(root, output_path)
+    output_path = os.path.join(root, output_path)
     
     if os.path.exists(output_path):
         print(f'Reading {arweave_path} from cache')
@@ -63,8 +62,8 @@ def download(arweave_path, root=None):
     return output_path
 
 lamports_per_sol = 1000000000
-def check_balance(root=None):
-    private_key, public_key = create_solana_wallet(root=root)
+def check_balance():
+    private_key, public_key = create_solana_wallet()
     cmd = f'bundlr balance {public_key} -h {host} -c solana'
     result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
     sol_val = float(result.stdout.decode('utf-8').strip().split(' ')[-2].strip('()'))
@@ -81,8 +80,8 @@ def check_price(megabytes):
     lamports = int(result.stdout.decode('utf-8').strip().split(' ')[7])
     return lamports
 
-def fund(megabytes, root=None):
-    private_key, public_key = create_solana_wallet(root=root)
+def fund(megabytes):
+    private_key, public_key = create_solana_wallet()
     lamports = check_price(megabytes)
     print(f'Current price of bundlr: {lamports/lamports_per_sol} sol for {megabytes} MB')
 
@@ -100,8 +99,6 @@ def fund(megabytes, root=None):
     print(error)
 
 if __name__ == '__main__':
-    import pathlib
-    root = pathlib.Path(__file__).resolve().parent.parent
     #print(root)
     #print(check_price(200)/lamports_per_sol)
     #print(check_balance(root=root))

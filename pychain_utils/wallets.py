@@ -6,8 +6,10 @@ import web3
 from eth_account import Account
 from solana.keypair import Keypair
 
+from . import root
+
 supported_currency = ['eth', 'sol']
-def create_wallet(currency, root=None):
+def create_wallet(currency):
     # Create an eth/sol wallet if one does not exist
     if currency not in supported_currency:
         raise NotImplementedError('Supported currencies are {supported_currency}')
@@ -15,9 +17,8 @@ def create_wallet(currency, root=None):
     private_key_path = f'keys/private_key.{currency}'
     public_key_path = f'keys/public_key.{currency}'
 
-    if root is not None:
-        private_key_path = os.path.join(root, private_key_path)
-        public_key_path = os.path.join(root, public_key_path)
+    private_key_path = os.path.join(root, private_key_path)
+    public_key_path = os.path.join(root, public_key_path)
 
     if not (os.path.exists(private_key_path) and os.path.exists(public_key_path)):
         if currency == 'eth':

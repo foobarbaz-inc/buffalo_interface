@@ -1,4 +1,5 @@
 import time
+import base64
 import hashlib
 from celery import Celery
 
@@ -11,14 +12,16 @@ app.conf.result_extended = True
 @app.task(name='run_inference')
 def run_inference(job_id,
                   model_class_num,
-                  seed,
+                  seed_bytes_base64,
                   model_config_location,
                   input_data_location_type,
                   input_str,
                   output_data_location_type,
                   output_data_format):
     # convert seed from bytes to int
-    seed = int.from_bytes(hashlib.sha256(seed).digest()[:3], 'big')
+    seed_bytes = base64.b64decode(seed_bytes_base64)
+    seed = int.from_bytes(hashlib.sha256(seed_bytes).digest()[:3], 'big')
+    print(seed)
     
     # load the model
     model = build_model_from_config(model_class_num, model_config_location)

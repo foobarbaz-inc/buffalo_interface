@@ -82,7 +82,19 @@ def update_status(job_id, jobStatus, resultsLocation):
     txn_receipt = submit_transaction(transaction)
     return txn_receipt
 
+def add_sequencer():
+    transaction_fn = contract_instance.functions.addSequencer(public_key)
+    transaction = transaction_fn.buildTransaction(transaction=
+                    {'from': public_key})
+    txn_receipt = submit_transaction(transaction)
+    return txn_receipt
+
 if __name__ == '__main__':
-    data = get_job(1)
-    print(data)
+    print(get_sequencer(public_key))
+    for i in range(1, 100000000):
+        job_data = get_job(i)
+        createdTimestamp = job_data[0][2]
+        if createdTimestamp == 0:
+            break
+        print(job_data)
 
