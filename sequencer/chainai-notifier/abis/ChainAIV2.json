@@ -1,0 +1,284 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "inferencePrice_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAIV2.ModelCategory",
+        "name": "modelCategory",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "seed",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "modelConfigLocation",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAIV2.InputDataLocationType",
+        "name": "inputDataLocationType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "input",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAIV2.OutputDataLocationType",
+        "name": "outputDataLocationType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ChainAIV2.OutputDataFormat",
+        "name": "outputDataFormat",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "createdTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "JobCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      }
+    ],
+    "name": "JobFailed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "jobId",
+        "type": "uint256"
+      }
+    ],
+    "name": "JobSucceeded",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "sequencer", "type": "address" }
+    ],
+    "name": "addSequencer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "inferencePrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "jobs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum ChainAIV2.JobStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          { "internalType": "uint256", "name": "id", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "createdTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "callbackId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "callbackAddress",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ChainAIV2.JobParams",
+        "name": "jobParams",
+        "type": "tuple"
+      },
+      {
+        "internalType": "enum ChainAIV2.ModelCategory",
+        "name": "modelCategory",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum ChainAIV2.InputDataLocationType",
+        "name": "inputDataLocationType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum ChainAIV2.OutputDataLocationType",
+        "name": "outputDataLocationType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum ChainAIV2.OutputDataFormat",
+        "name": "outputDataFormat",
+        "type": "uint8"
+      },
+      { "internalType": "bytes", "name": "seed", "type": "bytes" },
+      {
+        "internalType": "string",
+        "name": "modelConfigLocation",
+        "type": "string"
+      },
+      { "internalType": "string", "name": "input", "type": "string" },
+      { "internalType": "string", "name": "output", "type": "string" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "modelConfigLocation",
+        "type": "string"
+      },
+      { "internalType": "string", "name": "prompt", "type": "string" },
+      { "internalType": "uint256", "name": "callbackId", "type": "uint256" },
+      { "internalType": "bytes", "name": "seed", "type": "bytes" }
+    ],
+    "name": "promptConditionedTextGeneration",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "sequencer", "type": "address" }
+    ],
+    "name": "removeSequencer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "sequencers",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "modelConfigLocation",
+        "type": "string"
+      },
+      { "internalType": "string", "name": "prompt", "type": "string" },
+      { "internalType": "uint256", "name": "callbackId", "type": "uint256" },
+      { "internalType": "bytes", "name": "seed", "type": "bytes" },
+      {
+        "internalType": "enum ChainAIV2.OutputDataFormat",
+        "name": "outputDataFormat",
+        "type": "uint8"
+      }
+    ],
+    "name": "textConditionalImageGeneration",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "modelConfigLocation",
+        "type": "string"
+      },
+      { "internalType": "uint256", "name": "callbackId", "type": "uint256" },
+      { "internalType": "bytes", "name": "seed", "type": "bytes" },
+      {
+        "internalType": "enum ChainAIV2.OutputDataFormat",
+        "name": "outputDataFormat",
+        "type": "uint8"
+      }
+    ],
+    "name": "unconditionalImageGeneration",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "price", "type": "uint256" }
+    ],
+    "name": "updateInferencePrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "jobId", "type": "uint256" },
+      {
+        "internalType": "enum ChainAIV2.JobStatus",
+        "name": "jobStatus",
+        "type": "uint8"
+      },
+      { "internalType": "string", "name": "resultsLocation", "type": "string" }
+    ],
+    "name": "updateJobStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
