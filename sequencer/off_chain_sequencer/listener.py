@@ -26,7 +26,7 @@ query = '''
   }
 }
 '''
-endpoint = 'https://api.studio.thegraph.com/query/23114/chainai-notifier/v0.0.2'
+endpoint = 'https://api.studio.thegraph.com/query/23114/chainai-notifier/v0.0.4'
 
 redis_initiated_str = 'job_id_initiated'
 def get_redis_status():

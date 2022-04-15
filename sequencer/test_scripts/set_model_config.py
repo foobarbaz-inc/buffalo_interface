@@ -52,8 +52,22 @@ def update_model(newModel):
 def get_model():
     return contract_instance.functions.model().call()
 
+def set_loading_img(loading_img):
+    transaction = contract_instance.functions.setLoadingImage(loading_img)\
+            .buildTransaction(transaction={'from': public_key})
+    txn_receipt = submit_transaction(transaction)
+    return txn_receipt
+
+def get_loading_img():
+    return contract_instance.functions.loadingImg().call()
+
 if __name__ == '__main__':
-    #config_path = 'https://arweave.net/IcQ1dcyGvOmeAZutDT5jqUQoRVA4mM-RXkG1wHUMqO0'
-    #txn_receipt = update_model(config_path)
-    #print(txn_receipt)
+    config_path = 'https://arweave.net/IcQ1dcyGvOmeAZutDT5jqUQoRVA4mM-RXkG1wHUMqO0'
+    txn_receipt = update_model(config_path)
+    print(txn_receipt)
     print(get_model())
+
+    loading_img = 'https://arweave.net/t6Zty8DwFR2uJDN6JHzWne7eLMSbzgs3XrP8ruhqbt0'
+    txn_receipt = set_loading_img(loading_img)
+    print(txn_receipt)
+    print(get_loading_img())
