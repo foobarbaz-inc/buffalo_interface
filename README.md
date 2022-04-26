@@ -23,6 +23,11 @@ Install requirements:
 pip install -r requirements.txt
 ```
 
+Run setup:
+```
+python setup.py install
+```
+
 #### Required environment variables:
 
 `RINKEBY_HTTP_PROVIDER` - blockchain node URL
@@ -62,11 +67,11 @@ architecture_index = [
 ]
 ```
 
-Each interface should be defined by subclassing `ModelClass`, defining the inputs and outputs of a `run` function, and setting the class variables `input_data_type`, and `output_data_type`. Data type classes are defined in `interface.py`. 
+Each interface should be defined by subclassing `ModelClass`, defining the inputs and outputs of a `run` function, and setting the class variables `input_data_type`, and `output_data_type`. Data type classes are defined in `interface.py`.
 
 ## Sequencer
 
-The Sequencer listens to contract events from the on-chain Oracle contract via a subgraph and distributes jobs that need to be run to workers. 
+The Sequencer listens to contract events from the on-chain Oracle contract via a subgraph and distributes jobs that need to be run to workers.
 
 ### Subgraph
 
@@ -120,4 +125,3 @@ celery -A worker_celery worker --loglevel=INFO -Q inference -P solo --concurrenc
 ```
 
 The worker also runs with concurrency 1 to avoid overloading one GPU. Currently, to use multiple GPUs, you will need multiple workers each with concurrency 1.
-
