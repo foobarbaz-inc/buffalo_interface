@@ -23,9 +23,9 @@ Install requirements:
 pip install -r requirements.txt
 ```
 
-Run setup:
+Run setup to install the buffalo_interface package:
 ```
-python setup.py install
+pip install -e .
 ```
 
 #### Required environment variables:
