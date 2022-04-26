@@ -34,7 +34,7 @@ def run_inference(job_id,
                                                             output_data_location_type)
     
     # if needed, convert the output to NFT format
-    if output_data_format == 1:
-        output_data = convert_to_NFT(output_data, seed, input_str)
+    #if output_data_format == 1:
+    #    output_data = convert_to_NFT(output_data, seed, input_str)
     return job_id, output_data
 

@@ -26,7 +26,7 @@ query = '''
   }
 }
 '''
-endpoint = 'https://api.studio.thegraph.com/query/23114/chainai-notifier/v0.0.4'
+endpoint = 'https://api.studio.thegraph.com/query/23114/chainai-notifier/v0.0.6'
 
 redis_initiated_str = 'job_id_initiated'
 def get_redis_status():
@@ -144,7 +144,7 @@ def worker_error(result_id):
 
 @listener_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(30, check_for_new_job.s())
+    sender.add_periodic_task(20, check_for_new_job.s())
 
 def delete_all():
     for key in redis.keys():

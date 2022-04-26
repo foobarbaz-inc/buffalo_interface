@@ -61,7 +61,11 @@ def set_loading_img(loading_img):
 def get_loading_img():
     return contract_instance.functions.loadingImg().call()
 
+def get_token_uris(i):
+    return contract_instance.functions.tokenURI(i).call()
+
 if __name__ == '__main__':
+    #'''
     config_path = 'https://arweave.net/IcQ1dcyGvOmeAZutDT5jqUQoRVA4mM-RXkG1wHUMqO0'
     txn_receipt = update_model(config_path)
     print(txn_receipt)
@@ -71,3 +75,6 @@ if __name__ == '__main__':
     txn_receipt = set_loading_img(loading_img)
     print(txn_receipt)
     print(get_loading_img())
+    #'''
+    #for i in range(1, 10):
+    #    print(i, get_token_uris(i))

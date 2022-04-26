@@ -6,7 +6,7 @@ dataSources:
     name: ChainAIV2
     network: rinkeby
     source:
-      address: "0x48864A4eD5e5410D4f1944b8FD7452827da05AAE"
+      address: "0x0c083303B9B46C1c2D74419e4b2E51293b89fD3A"
       abi: ChainAIV2
       startBlock: 10505997
     mapping:
