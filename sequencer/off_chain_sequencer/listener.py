@@ -103,7 +103,7 @@ def run_job(job):
 can_ignore_template = can_ignore_str+' {job_id}'
 def can_ignore_job(job_id):
     key = can_ignore_template.format(job_id=job_id)
-    if redis.exists(key) and redis.get(key) == 'true':
+    if redis.exists(key) and redis.get(key).decode() == 'true':
         return True
     return False
 
@@ -131,10 +131,12 @@ def check_for_new_job():
         # check if we know the job has already finished, so we don't have to query the blockchain
         # for the status
         if can_ignore_job(job_id):
+            print(f'Found job {job_id} from thegraph that does not need to be processed')
             continue
 
         # At this point, indicate that everything below should only be run this one time
         # for this job_id
+        print(f'Found job {job_id} from thegraph that needs to be processed')
         set_ignore_job(job_id)
 
         current_job_data = get_job(job_id)
