@@ -4,7 +4,52 @@ The Buffalo Interface is a unified interface for running machine learning models
 
 In addition to hosting the model repository, this codebase also includes a celery scheduling system for calling the supported ML APIs. This system is made up of two parts, the Sequencer and the Worker.
 
+## Setup
+
+Create a conda environment:
+```
+conda create --name buffalo python=3.8
+```
+
+Inside the conda environment install pytorch: https://pytorch.org/get-started/locally/
+E.g.
+```
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+```
+
+Install requirements:
+```
+pip install -r requirements.txt
+```
+
 ## Model Repository
+
+The model repository code is located at `buffalo_models/`. Each interface has its own subdirectory (e.g. `TextConditionalImageGeneration`), and each architecture that implements the interface is located within that subdirectory (e.g. `TextConditionalImageGeneration/CLIPGuidedDiffusion.py`).
+
+To load models by their name, each interface should list the implemented architectures in their respective `__init__.py` file, for example:
+
+`TextConditionalImageGeneration/__init__.py`
+```
+from .CLIPGuidedDiffusion import CLIPGuidedDiffusion
+
+architectures = [
+    CLIPGuidedDiffusion
+]
+```
+
+Then the architectures should be loaded for each interface in the top-level `__init__.py`, for example:
+
+`__init__.py`
+```
+from .TextConditionalImageGeneration \
+        import architectures as TextConditionalImageGeneration_architectures
+
+architecture_index = [
+    TextConditionalImageGeneration_architectures
+]
+```
+
+Each interface should be defined by subclassing `ModelClass`, defining the inputs and outputs of a `run` function, and setting the class variables `input_data_type`, and `output_data_type`. Data type classes are defined in `interface.py`. 
 
 ## Sequencer
 
@@ -33,17 +78,11 @@ When you deploy you will need to select a version, and the combination of the su
 
 ### Job Management
 
-The celery listener that queries the subgraph and distributes jobs is at `sequencer/off_chain_sequencer/listener.py`. The listener uses a redis backend and an RabbitMQ message broker to send messages to workers, managed with celery. 
-
-#### Redis Setup
+The celery listener that queries the subgraph and distributes jobs is at `sequencer/off_chain_sequencer/listener.py`. The listener uses a redis backend and an RabbitMQ message broker to send messages to workers, managed with celery. The listener puts jobs in the worker queue as needed, and workers pull from the queue. The worker jobs are linked to a follow-up job on success and an error job, one of which is performed by the listener after the job ends depending on the status.
 
 To setup redis, follow https://redis.io/docs/getting-started/installation/install-redis-on-linux/.
 
-#### RabbitMQ Setup
-
 To setup RabbitMQ, follow https://www.rabbitmq.com/download.html.
-
-#### Running the listener
 
 Delete Redis cache and reset listener:
 ```
@@ -59,4 +98,13 @@ celery -A listener worker -B -n listener --concurrency=1
 The listener currently runs with concurrency 1 to avoid race conditions. It uses celery beat to schedule a graph query every 30 seconds.
 
 ## Worker
+
+The worker listens for `run_inference` jobs, builds the correct model from the config file, and runs inference. It acts as a wrapper around the model and utility functions defined in the model repository.
+
+Run workers:
+```
+celery -A worker_celery worker --loglevel=INFO -Q inference -P solo --concurrency=1 -n gpu_worker
+```
+
+The worker also runs with concurrency 1 to avoid overloading one GPU. Currently, to use multiple GPUs, you will need multiple workers each with concurrency 1.
 
