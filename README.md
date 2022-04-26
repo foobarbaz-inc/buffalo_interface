@@ -12,6 +12,7 @@ conda create --name buffalo python=3.8
 ```
 
 Inside the conda environment install pytorch: https://pytorch.org/get-started/locally/
+
 E.g.
 ```
 conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
@@ -21,6 +22,18 @@ Install requirements:
 ```
 pip install -r requirements.txt
 ```
+
+#### Required environment variables:
+
+`RINKEBY_HTTP_PROVIDER` - blockchain node URL
+
+`CHAINAI_ADDRESS` - Address of ChainAI Oracle contract
+
+`RINKEBY_PRIVATE_KEY` - Hex digest (prefixed with 0x) private key for the account calling blockchain functions
+
+#### Required key files:
+
+Currently, a Solana account is used to fund the bundlr uploads. The private key for the account will be automatically generated at `keys/private_key.sol` and `keys/public_key.sol` if a key does not exist, but you will need to manually transfer funds to the Solana account. Bundlr maintains a separate funding account, this code handles automatically funding the bundlr account from the generated solana account as needed for uploads so the only thing you need to do is make sure the generated solana account remains funded.
 
 ## Model Repository
 
