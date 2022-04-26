@@ -29,6 +29,7 @@ query = '''
 endpoint = 'https://api.studio.thegraph.com/query/23114/chainai-notifier/v0.0.6'
 
 redis_initiated_str = 'job_id_initiated'
+can_ignore_str = 'can_ignore'
 def get_redis_status():
     job_id_to_redis_status = {}
     all_keys = list(redis.keys())
@@ -45,7 +46,7 @@ def get_redis_status():
     # then get the keys for when the job has been added to the backend properly
     for key in all_keys:
         key_name = key.decode('utf-8')
-        if redis_initiated_str in key_name:
+        if redis_initiated_str in key_name or can_ignore_str in key_name:
             continue
         redis_task = redis.get(key)
         redis_task = json.loads(redis_task.decode('utf-8'))
@@ -61,7 +62,7 @@ def redis_id_to_contract_job_id(task_id):
     all_keys = list(redis.keys())
     for key in all_keys:
         key_name = key.decode('utf-8')
-        if redis_initiated_str in key_name:
+        if redis_initiated_str in key_name or can_ignore_str in key_name:
             continue
         redis_task = redis.get(key)
         redis_task = json.loads(redis_task.decode('utf-8'))
@@ -99,6 +100,17 @@ def run_job(job):
     # set the redis indicator that we've handled this
     redis.set(f'{redis_initiated_str} {job_id}', '')
 
+can_ignore_template = can_ignore_str+' {job_id}'
+def can_ignore_job(job_id):
+    key = can_ignore_template.format(job_id=job_id)
+    if redis.exists(key) and redis.get(key) == 'true':
+        return True
+    return False
+
+def set_ignore_job(job_id):
+    key = can_ignore_template.format(job_id=job_id)
+    redis.set(key, 'true')
+
 @listener_app.task(name='check_for_new_job')
 def check_for_new_job():
     # get all jobs ever created
@@ -115,6 +127,16 @@ def check_for_new_job():
     for job in jobs:
         # find the jobs that have not yet finished
         job_id = int(job['id'])
+
+        # check if we know the job has already finished, so we don't have to query the blockchain
+        # for the status
+        if can_ignore_job(job_id):
+            continue
+
+        # At this point, indicate that everything below should only be run this one time
+        # for this job_id
+        set_ignore_job(job_id)
+
         current_job_data = get_job(job_id)
         current_status = current_job_data[0][0]
 
