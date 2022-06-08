@@ -200,7 +200,7 @@ class TicTacToeEnv(gym.Env):
         action_probs[action] = 0.92
         return action_probs
 
-    def run(self, model_config, address, game_id, seed=123):
+    def run(self, address, game_id, model_config, seed=123):
         self.seed(seed)
 
         model = load_model(self, model_config)
