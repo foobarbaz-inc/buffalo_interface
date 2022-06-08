@@ -40,6 +40,8 @@ pip install -e .
 
 Currently, a Solana account is used to fund the bundlr uploads. The private key for the account will be automatically generated at `keys/private_key.sol` and `keys/public_key.sol` if a key does not exist, but you will need to manually transfer funds to the Solana account. Bundlr maintains a separate funding account, this code handles automatically funding the bundlr account from the generated solana account as needed for uploads so the only thing you need to do is make sure the generated solana account remains funded.
 
+You will also need a `keys/private_key.eth` and `keys/public_key.eth` file if you want to be able to have your account added on the sequencer. Once those keys are added, you can run the script
+
 ## Model Repository
 
 The model repository code is located at `buffalo_models/`. Each interface has its own subdirectory (e.g. `TextConditionalImageGeneration`), and each architecture that implements the interface is located within that subdirectory (e.g. `TextConditionalImageGeneration/CLIPGuidedDiffusion.py`).
@@ -87,12 +89,25 @@ graph auth --studio $GRAPH_DEPLOY_KEY
 graph codegen && graph build
 ```
 
-3. Deploy:
+3. Add new contract addresses:
+Replace the ChainAIV2 contract address in both subgraph.yaml and networks.json with the newly deployed one.
+
+4. Deploy:
 ```
-graph deploy --studio chainai-notifier
+graph deploy --studio chainai
 ```
 
 When you deploy you will need to select a version, and the combination of the subgraph and version defines a unique URL for the REST API that can be queried.
+
+5. Update Graph API in sequencer:
+In sequencer/off_chain_sequencer/listener.py, add the new version of the Graph API endpoint at line 26, e.g.
+```
+endpoint = 'https://api.studio.thegraph.com/query/26495/chainai/v0.0.2'
+```
+
+6. Update CHAINAI_ADDRESS in the environment variables with the new deployed address.
+
+7. Run python add_sequencer.py to add the Rinkeby account associated with the sequencer to the new ChainAI contract.
 
 ### Job Management
 
