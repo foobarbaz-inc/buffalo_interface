@@ -1,0 +1,5 @@
+{
+    "architecture": "TicTacToeEnv",
+    "weights_path": "https://arweave.net/xiCLXZAmPAKNDOGSFvP7MTiX09Bq92AlixOe2PsUXiE",
+    "output_encoding": ["uint256", "uint256"]
+}

@@ -2,6 +2,6 @@
     "architecture": "CLIPGuidedDiffusion",
     "prompt_weight": 5.0,
     "upscale": 2,
-    "weights_path": "https://v-diffusion.s3.us-west-2.amazonaws.com/cc12m_1_cfg.pth"
+    "weights_path": "https://v-diffusion.s3.us-west-2.amazonaws.com/cc12m_1_cfg.pth",
+    "output_encoding": ["string"]
 }
-    

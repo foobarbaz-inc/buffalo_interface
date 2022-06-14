@@ -22,19 +22,18 @@ def run_inference(job_id,
     seed_bytes = base64.b64decode(seed_bytes_base64)
     seed = int.from_bytes(hashlib.sha256(seed_bytes).digest()[:3], 'big')
     print(seed)
-    
+
     # load the model
     model = build_model_from_config(model_class_num, model_config_location)
 
     # handle data formats and run the model
-    input_data = model.input_data_type.parse_input_data(input_str,
-                                                        input_data_location_type)
+    input_data = model.input_data_type.parse_input_data(
+        input_data_location_type, input_str,)
     model_output = model.run(input_data, seed=seed)
-    output_data = model.output_data_type.format_output_data(model_output,
-                                                            output_data_location_type)
-    
+    output_data = model.output_data_type.format_output_data(
+        output_data_location_type, *model_output)
+
     # if needed, convert the output to NFT format
     #if output_data_format == 1:
     #    output_data = convert_to_NFT(output_data, seed, input_str)
     return job_id, output_data
-
