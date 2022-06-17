@@ -78,18 +78,6 @@ def redis_id_to_contract_job_id(task_id):
     return None
 
 
-def get_config_from_job_id(job_id):
-    result = redis.get(f'{job_config_str} {job_id}')
-    return json.loads(result)
-
-
-def set_config_from_job_id(job_id, callbackFunction, callbackId):
-    redis.set(f'{job_config_str} {job_id}', json.dumps({
-        'callbackFunction': callbackFunction,
-        'callbackId': callbackId
-    }))
-
-
 def run_job(job):
     job_id = int(job['id'])
 
@@ -172,7 +160,6 @@ def check_for_new_job():
 @listener_app.task()
 def update_contract(worker_output):
     job_id, result = worker_output
-    job_config = get_config_from_job_id(job_id)
     print(f'Got successful response for job_id {job_id}. Output result is {result}.')
     update_status(
         job_id,
@@ -184,7 +171,7 @@ def update_contract(worker_output):
 def worker_error(result_id):
     job_id = redis_id_to_contract_job_id(result_id)
     print(f'Encountered error with redis id {result_id} job_id {job_id}')
-    update_status(job_id, 'Failed', '')
+    update_status(job_id, 'Failed', bytes.fromhex(''))
 
 @listener_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
