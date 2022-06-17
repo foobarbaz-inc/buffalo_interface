@@ -115,10 +115,6 @@ def run_job(job):
     # set the redis indicator that we've handled this
     redis.set(f'{redis_initiated_str} {job_id}', '')
 
-    # set the config
-    config = {'callbackFunction': job['callbackFunction'], 'callbackId': job['callbackId']}
-    redis.set(f'{job_config_str} {job_id}', ')
-
 can_ignore_template = can_ignore_str+' {job_id}'
 def can_ignore_job(job_id):
     key = can_ignore_template.format(job_id=job_id)
