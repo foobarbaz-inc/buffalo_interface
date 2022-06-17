@@ -40,7 +40,7 @@ pip install -e .
 
 Currently, a Solana account is used to fund the bundlr uploads. The private key for the account will be automatically generated at `keys/private_key.sol` and `keys/public_key.sol` if a key does not exist, but you will need to manually transfer funds to the Solana account. Bundlr maintains a separate funding account, this code handles automatically funding the bundlr account from the generated solana account as needed for uploads so the only thing you need to do is make sure the generated solana account remains funded.
 
-You will also need a `keys/private_key.eth` and `keys/public_key.eth` file if you want to be able to have your account added on the sequencer. Once those keys are added, you can run the script
+You will also need a `keys/private_key.eth` and `keys/public_key.eth` file if you want to be able to have your account added on the sequencer. Once those keys are added, you can run the script `python add_sequencer.py` to add the Rinkeby account associated with the sequencer to the new ChainAI contract.
 
 ## Model Repository
 

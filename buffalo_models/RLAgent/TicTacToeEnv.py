@@ -5,8 +5,6 @@ import json
 import numpy as np
 import web3
 
-from Agent import Agent
-
 
 class Player():
     def __init__(self, id, token):
@@ -199,20 +197,6 @@ class TicTacToeEnv(gym.Env):
         action_probs = [0.01] * self.action_space.n
         action_probs[action] = 0.92
         return action_probs
-
-    def run(self, address, game_id, model_config, seed=123):
-        self.seed(seed)
-
-        model = load_model(self, model_config)
-        agent = Agent('tictactoe', model)
-
-        _ = self.reset(address=address, game_id=game_id)
-
-        action = agent.choose_action(self, choose_best_action=True, mask_invalid_actions=True)
-
-        #obs, reward, done, _ = env.step(action)
-
-        return action
 
 
 def checkWin(b, m):
