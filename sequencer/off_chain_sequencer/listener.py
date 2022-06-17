@@ -26,7 +26,7 @@ query = '''
   }
 }
 '''
-endpoint = 'https://api.studio.thegraph.com/query/26495/chainai/v0.4.0'
+endpoint = 'https://api.studio.thegraph.com/query/26495/chainai/v0.5.0'
 
 job_config_str = 'job_config'
 redis_initiated_str = 'job_id_initiated'
