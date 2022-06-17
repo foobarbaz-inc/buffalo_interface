@@ -177,7 +177,7 @@ def update_contract(worker_output):
     update_status(
         job_id,
         'Succeeded',
-        result
+        bytes.fromhex(result)
     )
 
 @listener_app.task()
