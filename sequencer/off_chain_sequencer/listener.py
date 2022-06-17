@@ -175,7 +175,7 @@ def worker_error(result_id):
 
 @listener_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(5, check_for_new_job.s())
+    sender.add_periodic_task(1, check_for_new_job.s())
 
 def delete_all():
     for key in redis.keys():
