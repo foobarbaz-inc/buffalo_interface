@@ -43,7 +43,7 @@ class TextDataType(DataType):
         return input_str
 
     @classmethod
-    def format_output_data(cls, output_data_location_type, *model_output) -> str:
+    def format_output_data(cls, output_data_location_type, model_output) -> str:
         if output_data_location_type != 2:
             raise NotImplementedError
         classes = [TYPE_MAPPING.get(str(type(m))) for m in model_output]

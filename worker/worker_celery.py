@@ -28,10 +28,10 @@ def run_inference(job_id,
 
     # handle data formats and run the model
     input_data = model.input_data_type.parse_input_data(
-        input_data_location_type, input_str,)
+        input_data_location_type, input_str)
     model_output = model.run(input_data, seed=seed)
     output_data = model.output_data_type.format_output_data(
-        output_data_location_type, *model_output)
+        output_data_location_type, model_output)
 
     # if needed, convert the output to NFT format
     #if output_data_format == 1:
