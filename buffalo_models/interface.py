@@ -37,7 +37,7 @@ class TextDataType(DataType):
         "<type 'str'>": 'string'
     }
     @classmethod
-    def parse_input_data(cls, input_data_location_type, output_tensor) -> str:
+    def parse_input_data(cls, input_data_location_type, input_str) -> str:
         if input_data_location_type != 2:
             raise NotImplementedError
         return input_str
