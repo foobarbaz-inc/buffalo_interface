@@ -26,8 +26,9 @@ query = '''
   }
 }
 '''
-endpoint = 'https://api.studio.thegraph.com/query/23114/chainai-notifier/v0.0.6'
+endpoint = 'https://api.studio.thegraph.com/query/26495/chainai/v0.3.0'
 
+job_config_str = 'job_config'
 redis_initiated_str = 'job_id_initiated'
 can_ignore_str = 'can_ignore'
 def get_redis_status():
@@ -42,7 +43,7 @@ def get_redis_status():
 
         job_id = int(key_name.split(' ')[-1])
         job_id_to_redis_status[job_id] = 'INITIATED'
-    
+
     # then get the keys for when the job has been added to the backend properly
     for key in all_keys:
         key_name = key.decode('utf-8')
@@ -58,6 +59,7 @@ def get_redis_status():
 
     return job_id_to_redis_status
 
+
 def redis_id_to_contract_job_id(task_id):
     all_keys = list(redis.keys())
     for key in all_keys:
@@ -72,12 +74,25 @@ def redis_id_to_contract_job_id(task_id):
         if redis_task['task_id'] == task_id:
             job_id = redis_task['kwargs']['job_id']
             return job_id
-    
+
     return None
+
+
+def get_config_from_job_id(job_id):
+    result = redis.get(f'{job_config_str} {job_id}')
+    return json.loads(result)
+
+
+def set_config_from_job_id(job_id, callbackFunction, callbackId):
+    redis.set(f'{job_config_str} {job_id}', json.dumps({
+        'callbackFunction': callbackFunction,
+        'callbackId': callbackId
+    }))
+
 
 def run_job(job):
     job_id = int(job['id'])
-    
+
     # need to convert e.g. '0x313233' to bytes and then serialize the bytes
     seed_bytes = bytes.fromhex(job['seed'][2:])
     seed_bytes = base64.b64encode(seed_bytes).decode('ascii')
@@ -99,6 +114,10 @@ def run_job(job):
 
     # set the redis indicator that we've handled this
     redis.set(f'{redis_initiated_str} {job_id}', '')
+
+    # set the config
+    config = {'callbackFunction': job['callbackFunction'], 'callbackId': job['callbackId']}
+    redis.set(f'{job_config_str} {job_id}', ')
 
 can_ignore_template = can_ignore_str+' {job_id}'
 def can_ignore_job(job_id):
@@ -149,22 +168,29 @@ def check_for_new_job():
         # if the job is currently running or waiting to run, there is nothing to do
         if job_id in job_id_to_redis_status:
             continue
-        
+
         # otherwise, this is a new job that needs to be handled
         print(f'Found a job that needs to be initiated: {job_id}')
         run_job(job)
 
 @listener_app.task()
 def update_contract(worker_output):
-    job_id, result_path = worker_output
-    print(f'Got successful response for job_id {job_id}. Output path is {result_path}.')
-    update_status(job_id, 'Succeeded', result_path)
+    job_id, args = worker_output
+    job_config = get_config_from_job_id(job_id)
+    print(f'Got successful response for job_id {job_id}. Output args are {args}.')
+    update_status(
+        job_id,
+        'Succeeded',
+        callback_function=job_config['callbackFunction'],
+        callback_id=job_config['callbackId'],
+        args=args
+    )
 
 @listener_app.task()
 def worker_error(result_id):
     job_id = redis_id_to_contract_job_id(result_id)
     print(f'Encountered error with redis id {result_id} job_id {job_id}')
-    update_status(job_id, 'Failed', '')
+    update_status(job_id, 'Failed')
 
 @listener_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
