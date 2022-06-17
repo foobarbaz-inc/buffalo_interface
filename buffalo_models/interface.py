@@ -1,6 +1,6 @@
 import torch
 
-from eth_abi import encode
+from eth_abi import encode_abi
 from typing import Any
 
 from pychain_utils.data_utils import torch_img_to_arweave
@@ -27,7 +27,7 @@ class ImageDataType(DataType):
         arweave_path = torch_img_to_arweave(output_tensor)
         if output_data_location_type != 0:
             raise NotImplementedError
-        return encode(['string'], [arweave_path])
+        return encode_abi(['string'], [arweave_path])
 
 
 class TextDataType(DataType):
@@ -47,7 +47,7 @@ class TextDataType(DataType):
         if output_data_location_type != 2:
             raise NotImplementedError
         classes = [TYPE_MAPPING.get(str(type(m))) for m in model_output]
-        return encode(classes, model_output)
+        return encode_abi(classes, model_output)
 
 
 class ModelClass():
