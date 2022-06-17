@@ -17,8 +17,7 @@ ENV_NAME_TO_CLS = {
 
 def load_model(env, name):
     path = download(name)
-    filename = os.path.join(path, env.name, name)
-    if os.path.exists(filename):
+    if os.path.exists(path):
         logger.info(f'Loading {name}')
         cont = True
         while cont:
@@ -86,7 +85,11 @@ class Agent():
 
         return action
 
-    def run(self, address, game_id, seed=123):
+    def run(self, args, seed=123):
+        if len(args) != 2:
+            raise ValueError("Wrong args for TicTacToe")
+        address = args[0]
+        game_id = args[1]
         self.env.seed(seed)
 
         _ = self.env.reset(address=address, game_id=game_id)

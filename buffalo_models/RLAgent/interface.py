@@ -1,4 +1,4 @@
-from ..interface import ModelClass, TextDataType, ImageDataType
+from ..interface import ModelClass, TicTacToeInput, TicTacToeOutput
 
 class RLAgent(ModelClass):
     input_data_type = TextDataType
