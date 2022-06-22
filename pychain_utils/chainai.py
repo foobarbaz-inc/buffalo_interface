@@ -72,11 +72,11 @@ def start_text_conditional_image_generation(
     txn_receipt = submit_transaction(transaction)
     return txn_receipt
 
-def update_status(job_id, jobStatus, resultsLocation):
+def update_status(job_id, jobStatus, results):
     # jobStatus is the string version
     jobStatus = status_to_int[jobStatus]
     transaction_fn = contract_instance.functions.updateJobStatus(job_id,
-            jobStatus, resultsLocation)
+            jobStatus, results)
     transaction = transaction_fn.buildTransaction(transaction=
                     {'from': public_key})
     txn_receipt = submit_transaction(transaction)
@@ -97,4 +97,3 @@ if __name__ == '__main__':
         if createdTimestamp == 0:
             break
         print(job_data)
-
